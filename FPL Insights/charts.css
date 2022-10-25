@@ -1,0 +1,185 @@
+#graph-area{
+	width: 100%;
+}
+
+#graph-title{
+	background-color: rgb(55, 0, 60);
+	padding: 20px;
+	margin-bottom: 20px;
+	border-radius: 10px;
+	text-align: left;
+	
+}
+
+.bar-title{
+	color: white;
+	display: inline-block;
+	margin-right: 10px;
+	cursor: pointer;
+	left: 0;
+}
+
+.fa-sort-down{
+	color: white;
+	margin-bottom: 3px;
+	cursor: pointer;
+}
+
+.fa-cog{
+	color: white;
+	margin-bottom: 3px;
+}
+
+.adjuster{
+	display: inline-block;
+	width: 25%;
+}
+
+.settings-box{
+	width:300px;
+	padding: 20px;
+	padding-bottom: 15px;
+	position: absolute;
+	background-color: white;
+	right: 0;
+	z-index: 100;
+	display: none;
+	border-radius: 10px;
+	border-style: solid;
+	border-width: 1px;
+	border-color: rgb(169, 169, 169);
+	color: rgb(55, 0, 60);
+	cursor: default;
+
+}
+.settings-container{
+	position: relative;
+	display: inline-block;
+	cursor: pointer;
+	float: right;
+	margin-right: 20px;
+}
+
+.donate {
+	float:right
+	
+}
+
+.fa-sort-down {
+	margin-right: 20px;
+}
+
+.fa-arrow-alt-circle-left, .fa-arrow-alt-circle-right {
+	cursor: pointer;
+	color: white;
+}
+
+#prev, #next {
+	display: inline-block;
+}
+
+/* The switch - the box around the slider */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+	float: right;
+
+}
+
+/* Hide default HTML checkbox */
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* The slider */
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+input:checked + .slider {
+  background-color: #2196F3;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(26px);
+  -ms-transform: translateX(26px);
+  transform: translateX(26px);
+}
+
+/* Rounded sliders */
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+
+.settings-title{
+	display: inline-block;
+	position: relative;
+	top: 8px;
+	margin-right:20px;
+}
+
+.gameD{
+	width:20%;
+	height: 20px;
+	background-color: red;
+	display: inline-block;
+	padding-top: 3px;
+}
+
+.difficulty2{
+	background-color: rgb(0, 255, 134);
+	color: black;
+}
+
+.difficulty3{
+	background-color: rgb(235, 235, 228);
+	color: black;
+}
+
+.difficulty4{
+	background-color: rgb(255, 0, 90);
+	color: white;
+}
+
+.difficulty5{
+	background-color: rgb(134, 29, 70);
+	color: white;
+}
+
+.line-item{
+	height:40px;
+}
+
+
