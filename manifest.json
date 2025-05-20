@@ -1,41 +1,64 @@
 {
 "update_url": "https://clients2.google.com/service/update2/crx",
 
-  "manifest_version": 2,
+  "manifest_version": 3,
   
-  "web_accessible_resources": [
-    "charts.html"
-	],
+  "web_accessible_resources": [{
+    "resources": ["charts.html", "*.css", "*.js"],
+    "matches": ["*://fantasy.premierleague.com/*"]
+  }],
 
   "name": "FPL Insights",
   "description": "A better way to get the latest statistics on all things fantasy premier league",
   "version": "2.0",
 
-  "browser_action": {
+  "action": {
     "default_popup": "popup.html",
-    "css": [ "popup.css" ]
+    "default_icon": {
+      "16": "icon16.png",
+      "48": "icon48.png",
+      "128": "icon128.png"
+    }
   },
 
   "icons": {
-        "16": "icon16.png",
-        "48": "icon48.png",
-        "128": "icon128.png"
-    },
-  "content_security_policy": "script-src 'self' https://ssl.google-analytics.com; object-src 'self'",
+    "16": "icon16.png",
+    "48": "icon48.png",
+    "128": "icon128.png"
+  },
+
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'"
+  },
+
   "permissions": [
     "activeTab",
-    "storage"
+    "storage",
+    "scripting"
   ],
+
+  "host_permissions": [
+    "*://fantasy.premierleague.com/*"
+  ],
+
   "content_scripts": [
-  {
-    "matches": [
-      "*://fantasy.premierleague.com/*"
-    ],
-	"css": ["slick.css", "apexcharts.css", "charts.css", "all.css"],
-    "js": ["apexcharts.js", "all.js", "jquery-3.4.1.min.js", "content.js", "slick.js"]
-  }
-],
+    {
+      "matches": [
+        "*://fantasy.premierleague.com/*"
+      ],
+      "css": ["slick.css", "apexcharts.css", "charts.css", "all.css"],
+      "js": [
+        "jquery-3.4.1.min.js",
+        "slick.js",
+        "apexcharts.js",
+        "all.js",
+        "content.js"
+      ],
+      "run_at": "document_end"
+    }
+  ],
+
   "background": {
-    "scripts": ["background.js"]
+    "service_worker": "background.js"
   }
 }

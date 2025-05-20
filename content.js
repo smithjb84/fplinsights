@@ -1,3 +1,7 @@
+// Test if script is loaded
+console.log('FPL Insights: Content script loaded');
+document.body.style.border = '5px solid red'; // This will make the page border red if the script loads
+
 // Hire me! smithjb84@gmail.com
 
 var players = [];
@@ -179,91 +183,41 @@ $('body').on( "click", "#showDifficulty", function() {
 });
 
 // Set up fpl insights
-function initialsetup() {
-
-	$.get(chrome.extension.getURL('/charts.html'), function(data) {
-		$( "#graph-area" ).remove();
-		$($.parseHTML(data)).appendTo('.eSoeNt');
-		initiateSettings();
-		var featureb = $( "#feature" ).val();
-		var positionb = parseInt($( "#positionb" ).val());
-
-		var sdata = getsdata("now_cost", "total_points", 1);
-		var bdata = getbdata(featureb, positionb);
-
-		scatter(sdata);
-		bar(bdata);
-		$(".outer").css('display', 'none');
-		$('.outer').slick({
-			prevArrow: '#prev',
-   			nextArrow: '#next',
-		 	autoplay: false,
-		 	arrows: false,
-			draggable: false,
-		  });
-
-		$('#next').click(function(){
-			$(".outer").slick('slickNext');
-		});
-		$('#prev').click(function(){
-			$(".outer").slick('slickPrev');
-		});
-	});
-}
-
-//Initialise variables
-$.get("/api/bootstrap-static/", function(data, status){
-		players = data.elements;
-		teams = data.teams;
-		$.get("/api/me/", function(data, status) {
-			var id = data["player"]["entry"].toString();
-			$.get("/api/my-team/"+id+"/", function(data, status) {
-				team = data.picks;
-				if (window.location.href === "https://fantasy.premierleague.com/transfers"){
-					setup();
-				}
-            });
-			});
-		});
-
-// show players when trying to switch
-$('body').on( "click", ".clRECT:contains('Restore Player'), .clRECT:contains('Add Player')", function() {
-	if($('#showPlayers').is(':checked')){
-		showPlayers();
-    }
-    if($('#showDifficulty').is(':checked')){
-		clearDifficulty();
-		showDifficulty();
-    }
-});
-
-// Set up fpl insights section on page load
 function setup() {
+    console.log('FPL Insights: Setup function called');
     var checkExist = setInterval(function () {
-        if ($('.eSoeNt').length) {
-        	clearInterval(checkExist);
-			initialsetup();
+        console.log('FPL Insights: Checking for main content container');
+        // Look for the main content area with multiple possible selectors
+        let container = $('.ism, .Layout__MainContent-sc-1e0jf8e-1, .Layout__MainContent-sc-1e0jf8e-2, .Layout__MainContent-sc-1e0jf8e-3, main, .Layout__Content-sc-1e0jf8e-0');
+        if (container.length) {
+            console.log('FPL Insights: Found container:', container.attr('class'));
+            clearInterval(checkExist);
+            initialsetup();
         }
-    }, 10);
+    }, 100);
 }
 
 // Set up fpl insights section on tab click
-$( "ul" ).on( "mouseup", "a:contains('Transfers')", function() {
-	var checkExists = setInterval(function() {
-	   if ($('.eSoeNt').length) {
-	   		clearInterval(checkExists);
-		   initialsetup();
-	   }
-	}, 10);
+$(document).on("click", "a:contains('Transfers')", function() {
+    console.log('FPL Insights: Transfers tab clicked');
+    var checkExists = setInterval(function() {
+        console.log('FPL Insights: Checking for main content container after tab click');
+        let container = $('.ism, .Layout__MainContent-sc-1e0jf8e-1, .Layout__MainContent-sc-1e0jf8e-2, .Layout__MainContent-sc-1e0jf8e-3, main, .Layout__Content-sc-1e0jf8e-0');
+        if (container.length) {
+            console.log('FPL Insights: Found container after tab click:', container.attr('class'));
+            clearInterval(checkExists);
+            initialsetup();
+        }
+    }, 100);
 });
 
 //Player Pics
 function showPlayers() {
     var playerPics = setInterval(function () {
-        if ($('.bcESdd').length) {
-        	clearInterval(playerPics);
-            $('.hoGPkp').each(function (index) {
-                var name = $(this).parent().parent().find('.PitchElementData__ElementName-sc-1u4y6pr-0').text();
+        if ($('.Pitch__PitchContainer-sc-1e0jf8e-0').length) {
+            clearInterval(playerPics);
+            $('.PitchElement__ElementImage-sc-1e0jf8e-0').each(function (index) {
+                var name = $(this).closest('.PitchElement__ElementContainer-sc-1e0jf8e-1').find('.PitchElementData__ElementName-sc-1u4y6pr-0').text();
                 var shirt_team = $(this).attr("alt");
 
                 var result_team = teams.find(obj => {
@@ -280,7 +234,6 @@ function showPlayers() {
                 var personpic = "//platform-static-files.s3.amazonaws.com/premierleague/photos/players/110x140/p" + code + ".png";
                 $(this).prev().attr("srcset", personpic);
                 $(this).attr("width", "56");
-
             });
         }
     }, 10);
@@ -289,23 +242,21 @@ function showPlayers() {
 //Show Shirts
 function showShirts() {
     var shirtPics = setInterval(function () {
-        if ($('.bcESdd').length) {
-            $('.hoGPkp').each(function (index) {
-                var name = $(this).parent().parent().find('.PitchElementData__ElementName-sc-1u4y6pr-0').text();
+        if ($('.Pitch__PitchContainer-sc-1e0jf8e-0').length) {
+            $('.PitchElement__ElementImage-sc-1e0jf8e-0').each(function (index) {
+                var name = $(this).closest('.PitchElement__ElementContainer-sc-1e0jf8e-1').find('.PitchElementData__ElementName-sc-1u4y6pr-0').text();
                 var shirt_team = $(this).attr("alt");
                 var result_team = teams.find(obj => {
                     return obj.name === shirt_team
                 });
                 var code = result_team.code;
-                if (index <=1){
-                	var shirtpic = "/dist/img/shirts/shirt_"+code+"_1-66.png";
-					console.log(shirtpic);
-				}
-				else{
-                	var shirtpic = "/dist/img/shirts/shirt_"+code+"-66.png";
-				}
-				$(this).prev().attr("srcset", shirtpic);
-				$(this).attr("width", "56");
+                if (index <= 1) {
+                    var shirtpic = "/dist/img/shirts/shirt_"+code+"_1-66.png";
+                } else {
+                    var shirtpic = "/dist/img/shirts/shirt_"+code+"-66.png";
+                }
+                $(this).prev().attr("srcset", shirtpic);
+                $(this).attr("width", "56");
             });
             clearInterval(shirtPics);
         }
@@ -427,14 +378,14 @@ function bar(bdata){
 }
 
 //Load Difficulty
-function showDifficulty(){
-	var showDiff = setInterval(function () {
-        if ($('.bcESdd').length) {
-        	clearDifficulty();
-        	clearInterval(showDiff);
-            $('.hoGPkp').each(function (index) {
-            	var name = $(this).parent().parent().find('.PitchElementData__ElementName-sc-1u4y6pr-0').text();
-            	var shirt_team = $(this).attr("alt");
+function showDifficulty() {
+    var showDiff = setInterval(function () {
+        if ($('.Pitch__PitchContainer-sc-1e0jf8e-0').length) {
+            clearDifficulty();
+            clearInterval(showDiff);
+            $('.PitchElement__ElementImage-sc-1e0jf8e-0').each(function (index) {
+                var name = $(this).closest('.PitchElement__ElementContainer-sc-1e0jf8e-1').find('.PitchElementData__ElementName-sc-1u4y6pr-0').text();
+                var shirt_team = $(this).attr("alt");
                 var result_team = teams.find(obj => {
                     return obj.name === shirt_team
                 });
@@ -446,22 +397,234 @@ function showDifficulty(){
                 });
 
                 var player_id = result.id.toString();
-                var area = $(this).parent().next();
-				$(this).parent().parent().parent().parent().parent().css("margin-bottom", "-22px");
+                var area = $(this).closest('.PitchElement__ElementContainer-sc-1e0jf8e-1').next();
+                $(this).closest('.PitchElement__ElementContainer-sc-1e0jf8e-1').parent().parent().parent().css("margin-bottom", "-22px");
                 $.get("/api/element-summary/"+player_id+"/", area, function(data, status){
-					var i;
-					area.remove( ".gameD" );
-					for (i = 0; i < 5; i++) {
-						var diff = data.fixtures[i].difficulty;
-						area.append("<div class='gameD difficulty"+diff+"'>"+diff+"</div>");
+                    var i;
+                    area.remove(".gameD");
+                    for (i = 0; i < 5; i++) {
+                        var diff = data.fixtures[i].difficulty;
+                        area.append("<div class='gameD difficulty"+diff+"'>"+diff+"</div>");
                     }
-				});
+                });
             });
         }
-        }, 10);
+    }, 10);
 }
 
 // Clear Difficulty
 function clearDifficulty(){
 	$('.gameD').remove();
+}
+
+//Initialise variables
+console.log('FPL Insights: Starting initialization');
+$.get("/api/bootstrap-static/", function(data, status){
+    console.log('FPL Insights: Bootstrap data loaded');
+    players = data.elements;
+    teams = data.teams;
+    $.get("/api/me/", function(data, status) {
+        console.log('FPL Insights: User data loaded');
+        var id = data["player"]["entry"].toString();
+        $.get("/api/my-team/"+id+"/", function(data, status) {
+            console.log('FPL Insights: Team data loaded');
+            team = data.picks;
+            if (window.location.href === "https://fantasy.premierleague.com/transfers"){
+                console.log('FPL Insights: On transfers page, calling setup');
+                setup();
+            }
+        }).fail(function(error) {
+            console.error('FPL Insights: Failed to load team data:', error);
+        });
+    }).fail(function(error) {
+        console.error('FPL Insights: Failed to load user data:', error);
+    });
+}).fail(function(error) {
+    console.error('FPL Insights: Failed to load bootstrap data:', error);
+});
+
+// show players when trying to switch
+$('body').on( "click", ".clRECT:contains('Restore Player'), .clRECT:contains('Add Player')", function() {
+	if($('#showPlayers').is(':checked')){
+		showPlayers();
+    }
+    if($('#showDifficulty').is(':checked')){
+		clearDifficulty();
+		showDifficulty();
+    }
+});
+
+function initialsetup() {
+    console.log('FPL Insights: Initial setup started');
+    // Check if we're on a valid FPL page
+    if (!window.location.href.includes('fantasy.premierleague.com')) {
+        console.log('FPL Insights: Not on FPL website');
+        return;
+    }
+
+    // Wait for jQuery to be available
+    if (typeof $ === 'undefined') {
+        console.log('FPL Insights: jQuery not loaded, retrying in 1s');
+        setTimeout(initialsetup, 1000);
+        return;
+    }
+
+    // Wait for the page to be fully loaded
+    if (document.readyState !== 'complete') {
+        console.log('FPL Insights: Page not fully loaded, retrying in 1s');
+        setTimeout(initialsetup, 1000);
+        return;
+    }
+
+    console.log('FPL Insights: Loading charts.html');
+    $.get(chrome.runtime.getURL('/charts.html'), function(data) {
+        console.log('FPL Insights: Charts.html loaded');
+        // Remove existing graph area if it exists
+        $("#graph-area").remove();
+        
+        // Find the gameweek heading element
+        let gameweekHeading = $('.TabHeading__TabHeadingOuter-sc-1wos76v-0');
+        if (gameweekHeading.length === 0) {
+            console.log('FPL Insights: Could not find gameweek heading');
+            return;
+        }
+        console.log('FPL Insights: Found gameweek heading');
+
+        // Create the graph area
+        let graphArea = $($.parseHTML(data));
+        
+        // Style the graph title
+        graphArea.find('#graph-title').css({
+            'background-color': '#37003c',
+            'padding': '10px 20px',
+            'margin': '0',
+            'border-radius': '6px 6px 0 0',
+            'position': 'relative',
+            'display': 'flex',
+            'align-items': 'center'
+        });
+
+        // Create a left section for title and toggle
+        let leftSection = $('<div class="left-section" style="display: flex; align-items: center; gap: 8px;"></div>');
+        graphArea.find('.bar-title').appendTo(leftSection);
+        graphArea.find('.toggle').appendTo(leftSection);
+        leftSection.prependTo(graphArea.find('#graph-title'));
+
+        // Create a right section for controls
+        let rightSection = $('<div class="right-section" style="display: flex; align-items: center; margin-left: auto; gap: 20px;"></div>');
+        graphArea.find('#prev').appendTo(rightSection);
+        graphArea.find('#next').appendTo(rightSection);
+        graphArea.find('.donate').appendTo(rightSection);
+        rightSection.appendTo(graphArea.find('#graph-title'));
+        
+        // Style the title text
+        graphArea.find('.bar-title').css({
+            'color': 'white',
+            'margin': '0',
+            'font-size': '16px',
+            'font-weight': 'bold'
+        });
+
+        // Style the toggle button
+        graphArea.find('.toggle').css({
+            'margin': '0',
+            'padding': '0',
+            'display': 'flex',
+            'align-items': 'center'
+        });
+
+        // Style the navigation arrows
+        graphArea.find('#prev, #next').css({
+            'margin': '0',
+            'padding': '0 5px',
+            'display': 'flex',
+            'align-items': 'center'
+        });
+
+        // Style the donate button
+        graphArea.find('.donate').css({
+            'margin': '0',
+            'padding': '0',
+            'display': 'flex',
+            'align-items': 'center'
+        });
+
+        // Remove the settings container
+        graphArea.find('.settings-container').remove();
+        
+        // Make sure the outer div is visible but collapsed
+        graphArea.find('.outer').css({
+            'display': 'none',
+            'width': '100%',
+            'position': 'relative',
+            'margin': '0'
+        });
+        
+        // Style the inner divs
+        graphArea.find('.inner').css({
+            'width': '100%',
+            'padding': '10px',
+            'background': 'transparent',
+            'margin': '0'
+        });
+        
+        // Make sure charts are visible but smaller
+        graphArea.find('.chart').css({
+            'width': '100%',
+            'height': '400px',
+            'margin-top': '10px'
+        });
+        
+        // Style the select elements
+        graphArea.find('.select-adjust, .bar-adjust').css({
+            'width': '100%',
+            'padding': '6px',
+            'margin-bottom': '8px',
+            'border': '1px solid #ddd',
+            'border-radius': '4px',
+            'font-size': '14px'
+        });
+        
+        // Insert the graph area before the gameweek heading
+        gameweekHeading.before(graphArea);
+        console.log('FPL Insights: Charts appended before gameweek heading');
+        
+        try {
+            initiateSettings();
+            var featureb = $("#feature").val();
+            var positionb = parseInt($("#positionb").val());
+
+            var sdata = getsdata("now_cost", "total_points", 1);
+            var bdata = getbdata(featureb, positionb);
+
+            scatter(sdata);
+            bar(bdata);
+            
+            // Initialize slick slider
+            $('.outer').slick({
+                prevArrow: '#prev',
+                nextArrow: '#next',
+                autoplay: false,
+                arrows: true,
+                draggable: true,
+                dots: true,
+                infinite: true,
+                speed: 300,
+                slidesToShow: 1,
+                adaptiveHeight: true
+            });
+
+            $('#next').click(function(){
+                $(".outer").slick('slickNext');
+            });
+            $('#prev').click(function(){
+                $(".outer").slick('slickPrev');
+            });
+            console.log('FPL Insights: Setup completed successfully');
+        } catch (error) {
+            console.error('FPL Insights: Error during setup:', error);
+        }
+    }).fail(function(error) {
+        console.error('FPL Insights: Failed to load charts.html:', error);
+    });
 }
